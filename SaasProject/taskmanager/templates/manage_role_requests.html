@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Role Requests</title>
+</head>
+<body>
+    <h1>Manage Role Requests</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Requested Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in role_requests %}
+            <tr>
+                <td>{{ request.user.username }}</td>
+                <td>{{ request.requested_role }}</td>
+                <td>
+                    <form method="post" action="{% url 'process_role_request' request.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="action" value="approve">Approve</button>
+                        <button type="submit" name="action" value="deny">Deny</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No role requests found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'dashboard' %}">Go back to Dashboard</a>
+</body>
+</html>
