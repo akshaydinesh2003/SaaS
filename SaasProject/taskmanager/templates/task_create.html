@@ -6,20 +6,12 @@
     <title>Create Task</title>
 </head>
 <body>
-    <h2>Create a New Task</h2>
-    <form method="POST" action="">
+    <h1>Create a New Task</h1>
+    <form method="POST">
         {% csrf_token %}
-        <label for="task_name">Task Name:</label>
-        <input type="text" id="task_name" name="task_name" required><br><br>
-        
-        <label for="task_description">Task Description:</label>
-        <textarea id="task_description" name="task_description" required></textarea><br><br>
-        
-        <label for="due_date">Due Date:</label>
-        <input type="date" id="due_date" name="due_date" required><br><br>
-
+        {{ form.as_p }}
         <button type="submit">Create Task</button>
     </form>
-    <a href="{% url 'create_task' %}">Create a New Task</a>
+    <a href="{% url 'task_list' %}">Back to Task List</a>
 </body>
-</html
+</html>

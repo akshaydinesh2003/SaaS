@@ -30,36 +30,47 @@ def task_list(request):
     tasks = Task.objects.all()
     return render(request, 'task_list.html', {'tasks': tasks})
 
-@login_required
 def create_task(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Task created successfully.')
+            task = form.save(commit=False)
+            task.status = 'Pending'  # You can set the initial status here
+            task.save()
             return redirect('task_list')
     else:
         form = TaskForm()
-    return render(request, 'create_task.html', {'form': form})
+    
+    return render(request, 'task_create.html', {'form': form})
 
 @login_required
 def assign_task(request):
     if request.user.userprofile.role in ['admin', 'manager']:
         if request.method == 'POST':
-            task_id = request.POST.get('task_id')
-            user_id = request.POST.get('user_id')
+            task_id = request.POST.get('task_id')  # Ensure this retrieves the task ID
+            user_id = request.POST.get('user_id')  # Ensure this retrieves the user ID
+
+            # Debugging: print task_id and user_id
+            print(f"Task ID: {task_id}, User ID: {user_id}")
+
+            # Fetch task by id, and if it doesn't exist, raise a 404 error
             task = get_object_or_404(Task, id=task_id)
             user = get_object_or_404(User, id=user_id)
+
+            # Assign the task to the selected user
             task.assigned_to = user
             task.save()
+
             messages.success(request, 'Task assigned successfully.')
             return redirect('dashboard')
-        tasks = Task.objects.filter(assigned_to=None)
+
+        tasks = Task.objects.filter(assigned_to=None)  # Fetch only unassigned tasks
         users = User.objects.all()
         return render(request, 'assign_task.html', {'tasks': tasks, 'users': users})
     else:
         messages.error(request, 'You are not authorized to assign tasks.')
         return redirect('dashboard')
+
 
 @login_required
 def request_role_change(request):

@@ -92,12 +92,32 @@
         .dropdown-content a:hover {
             background-color: #f1f1f1;
         }
-
+        .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        text-align: center;
+        }
 
 
     </style>
 </head>
 <body>
+
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
     <div class="container">
         <!-- Sidebar Section -->
         <div class="sidebar">
@@ -173,6 +193,12 @@
             var dropdown = document.getElementById("userDropdown");
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         }
+        setTimeout(function() {
+        var messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+            messageContainer.style.display = 'none';
+        }
+        }, 3000);
     </script>
 
 
